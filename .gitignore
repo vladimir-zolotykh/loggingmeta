@@ -2,6 +2,7 @@
 SOW/
 example.py
 example_clsdec.py
+.loggingmeta.py
 # Django specific
 *.log
 *.pot
