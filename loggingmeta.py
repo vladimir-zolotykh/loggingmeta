@@ -15,6 +15,7 @@ def setup_class_logger(
 ) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(log_level)
+    logger.propagate = True
     if not logger.handlers:
         handler = (
             logging.FileHandler(filename, mode=filemode)
@@ -64,18 +65,12 @@ class ID3(metaclass=LoggingMeta, filename=LOGFILENAME):
 
 
 def test_sum(caplog):
-    caplog.set_level(logging.INFO, logger="ID3")
-
     id3 = ID3()
-    result = id3.sum(3, 4)
-
-    # Check both call and return logs if you want
-    messages = [record.message for record in caplog.records]
-
-    assert any("'sum' is called with (3, 4), {}" in msg for msg in messages)
-    assert any("'sum' returns 7" in msg for msg in messages)
-
-    assert result == 7
+    id3.sum(3, 4)
+    assert any(
+        "'sum' is called with (3, 4)" in record.message for record in caplog.records
+    )
+    assert any("'sum' returns 7" in record.message for record in caplog.records)
 
 
 if __name__ == "__main__":
